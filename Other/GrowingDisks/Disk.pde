@@ -2,23 +2,26 @@ public class Disk {
 
   private PVector pos;
   private float radius;
-
+  private float sizeChangeRate;
   private boolean growing;
+  private boolean isToSmall;
 
-  public Disk() {
-    pos = new PVector();
-    initDisk();
+  public Disk(PVector pos) {
+    this.pos = pos;
+    sizeChangeRate = 0.5;
+    radius = 1;
+    growing = true;
   }
 
-  public void update(float sizeChange) {
+  public void update() {
     if (growing) {
-      radius += sizeChange;
+      radius += sizeChangeRate;
     } else {
-      radius -= sizeChange;
+      radius -= sizeChangeRate;
     }
 
     if (radius < 1) {
-      initDisk();
+      isToSmall = true;
     } else if (pos.x - radius < 0 || pos.x + radius > width || pos.y - radius < 0 || pos.y + radius > height) {
       startShrink();
     }
@@ -30,24 +33,27 @@ public class Disk {
     if (distance < this.radius + other.radius) {
       this.startShrink();
       other.startShrink();
-
-      //this.update();
-      //other.update();
     }
   }
 
-  public void startShrink() {
-    growing = false;
-  }
+  public boolean positionIsInDiskSpace(float newX, float newY) {
+    if (dist(this.pos.x, this.pos.y, newX, newY) < radius + 10) {
+      return true;
+    }
 
-  public void initDisk() {
-    pos.set(random(20, width - 20), random(20, height - 20));
-    radius = 1;
-    growing = true;
+    return false;
   }
 
   public void show() {
     fill(map(radius, 0, 300, 0, 360), 100, 100);
     circle(pos.x, pos.y, radius*2);
+  }
+
+  public boolean isToSmall() {
+    return isToSmall;
+  }
+
+  public void startShrink() {
+    growing = false;
   }
 }
