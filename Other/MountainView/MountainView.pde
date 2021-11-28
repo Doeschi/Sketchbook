@@ -10,15 +10,21 @@ int number_of_mountain_vertecies;
 color peakColor = color(0, 0, 255);
 color bottomColor = 0xFFFFFFFF;
 
-ArrayList<Mountain> mountains;
+ArrayList<MountainRange> mountains;
 
 // parameters meant to be changed in draw
 
 void setup() {
   size(1200, 800, P2D);
   number_of_mountain_vertecies = width/2;
-  
+  smooth(4);
   noLoop();
+}
+
+
+
+void mousePressed() {
+  redraw();
 }
 
 
@@ -26,7 +32,7 @@ void draw() {
   background(255);
   
   // TODO: 
-  // mountains has a depth 
+  // a mountain should have a depth 
   // -> color should vary between depths
   // -> bottom color should be based of the peak color 
   //    -> the closer the mountain, the lower the diffrence between the peak and bottom color
@@ -35,20 +41,18 @@ void draw() {
   // translates (0,0) to the bottem left corner and (widht,height) to the top right corner
   translate(0, height);
   scale(1, -1);
-  for (Mountain m : mountains) {
+  
+  // draw the mountains
+  for (MountainRange m : mountains) {
     m.show();
   }
-}
-
-void mousePressed() {
-  redraw();
 }
 
 void initMountains() {
   mountains = new ArrayList();
   
-  Mountain m = new Mountain(500, random(150, 250), random(0.005, 0.015));
-  Mountain m2 = new Mountain(400, random(150, 250), random(0.005, 0.015));
+  MountainRange m = new MountainRange(500, random(150, 250), random(0.005, 0.015));
+  MountainRange m2 = new MountainRange(400, random(150, 250), random(0.005, 0.015));
   
   mountains.add(m);
   mountains.add(m2);
