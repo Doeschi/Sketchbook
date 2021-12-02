@@ -6,20 +6,16 @@ Circle mouseCircle;
 boolean showMouseCircle;
 boolean showIntersectionPoints;
 
-// parameters meant to be changed in draw
-
-
 void setup() {
   size(800, 600, P2D);
 
   intersectionPoints = new ArrayList();
 
-  //initRandomCircles();
-  initRegularCircles();
+  initRandomCircles();
   mouseCircle = new Circle(new PVector(width/2, height/2), 50);
 
   smooth(4);
-  textSize(15);
+  textSize(12);
   textAlign(LEFT, TOP);
   noLoop();
 }
@@ -29,6 +25,8 @@ void keyPressed() {
     showMouseCircle = !showMouseCircle;
   } else if (key == 'i' || key == 'I') {
     showIntersectionPoints = !showIntersectionPoints;
+  } else if (key == 'r' || key == 'R') {
+    initRandomCircles();
   } else return;
 
   redraw();
@@ -70,33 +68,36 @@ void draw() {
 
   // draw intersection points
   if (showIntersectionPoints) {
-    intersectionPoints.clear();
+    createIntersectionPoints();
 
-    for (int i = 0; i < circles.size(); i++) {
-      Circle c = circles.get(i);
-      for (int j = i; j < circles.size(); j++) {
-        Circle otherC = circles.get(j);
-        c.addIntersectionPoints(otherC, intersectionPoints);
-      }
-    }
-
-    if (showMouseCircle) {
-      for (Circle c : circles) {
-        mouseCircle.addIntersectionPoints(c, intersectionPoints);
-      }
-    }
-
-    strokeWeight(5);
+    strokeWeight(4);
     stroke(0, 0, 255);
     for (PVector v : intersectionPoints) {
       point(v.x, v.y);
     }
   }
 
+  // show program instructions at the top left corner
   fill(0);
-  text("click and drag mouse\nshow/hide the mouse circle with 'c'\nshow/hide intersection points with 'i'", 10, 10);
+  text("Show/hide intersection points with 'i'\nShow/hide the mouse circle with 's'\nClick and drag the mouse to move the circle\nPlace new random circles with 'r'", 10, 10);
+}
 
-  println(frameRate);
+void createIntersectionPoints() {
+  intersectionPoints.clear();
+
+  for (int i = 0; i < circles.size(); i++) {
+    Circle c = circles.get(i);
+    for (int j = i; j < circles.size(); j++) {
+      Circle otherC = circles.get(j);
+      c.addIntersectionPoints(otherC, intersectionPoints);
+    }
+  }
+
+  if (showMouseCircle) {
+    for (Circle c : circles) {
+      mouseCircle.addIntersectionPoints(c, intersectionPoints);
+    }
+  }
 }
 
 void initRandomCircles() {
@@ -113,14 +114,14 @@ void initRandomCircles() {
 void initRegularCircles() {
   circles = new ArrayList();
   float radius = 60;
-  int maxIteration = 1;
+  int maxIteration = 2;
 
   Circle centerCircle = new Circle(new PVector(width/2, height/2), radius);
   Circle topCircle = new Circle(new PVector(width/2, height/2 - radius), radius);
   Circle rightCircle = new Circle(new PVector(width/2 + radius, height/2), radius);
   Circle bottomCircle = new Circle(new PVector(width/2, height/2 + radius), radius);
   Circle leftCircle = new Circle(new PVector(width/2 - radius, height/2), radius);
-  
+
   circles.add(centerCircle);
   circles.add(topCircle);
   circles.add(rightCircle);
@@ -132,9 +133,9 @@ void initRegularCircles() {
 
   for (int iteration = 0; iteration < maxIteration; iteration++) {
 
-     //checking if a new circle intersects with some other circles
-     
-     // 
+    //checking if a new circle intersects with some other circles
+
+    //
     for (int i = circles.size() - 1; i > circleIndex; i--) {
       Circle c = circles.get(i);
 

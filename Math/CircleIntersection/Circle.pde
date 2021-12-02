@@ -16,10 +16,7 @@ class Circle {
 
     float centerDistance = direction.mag();
 
-    // distance between the lines of the circle
-    float circumferenceDistance = centerDistance - (radius + otherCircle.radius);
-
-    if (centerDistance < radius + otherCircle.radius) {
+    if (centerDistance <= radius + otherCircle.radius) {
       // magnitude (distance) to the chord, which lies between the two intersction points
       float magnitude = ((radius*radius - otherCircle.radius*otherCircle.radius) + centerDistance*centerDistance) / (2 * centerDistance);
       PVector distanceFromCenterToChord = direction.copy().setMag(magnitude);
@@ -34,20 +31,16 @@ class Circle {
       float baseY = pos.y + distanceFromCenterToChord.y;
 
       // only add new intersections if they doesnt exists yet
-      if (pointDoesNotExists(round(baseX + halfChord.x), round(baseY + halfChord.y), points)) {
-        points.add(new PVector(round(baseX + halfChord.x), round(baseY + halfChord.y)));
+      // first intersection
+      if (pointDoesNotExists(baseX + halfChord.x, baseY + halfChord.y, points)) {
+        points.add(new PVector(baseX + halfChord.x, baseY + halfChord.y));
       }
-
-      if (pointDoesNotExists(round(baseX - halfChord.x), round(baseY - halfChord.y), points)) {
-        points.add(new PVector(round(baseX - halfChord.x), round(baseY - halfChord.y)));
+      
+      // second intersection, if there is one
+      if (pointDoesNotExists(baseX - halfChord.x, baseY - halfChord.y, points)) {
+        points.add(new PVector(baseX - halfChord.x, baseY - halfChord.y));
       }
     }
-    //else if (circumferenceDistance < 0.5 && circumferenceDistance > 0) {
-    //  float magnitude = ((radius*radius - otherCircle.radius * otherCircle.radius) + centerDistance * centerDistance) / (2 * centerDistance);
-    //  PVector heightOfChord = direction.copy().setMag(magnitude);
-    //  PVector p = PVector.add(pos, heightOfChord);
-    //  points.add(p);
-    //}
   }
 
   private boolean pointDoesNotExists(float newX, float newY, ArrayList<PVector> points) {
