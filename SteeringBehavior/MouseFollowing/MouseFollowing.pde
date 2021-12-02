@@ -1,34 +1,53 @@
+// source: Sebastian Lague - https://www.youtube.com/watch?v=X-iSQQgOd1A&t=307s (at 5:07)
+
 // variables
 PVector pos;
 PVector vel;
 
+boolean easingIsActive;
+
+// parameters meant to be changed in draw
+float maxSpeed;
+float steerStrength;
+float easing;
 
 void setup() {
   size(800, 600);
 
   pos = new PVector(width/2, height/2);
   vel = new PVector(0, 0);
+  
+  easingIsActive = true;
 }
 
+void mouseClicked() {
+  easingIsActive = !easingIsActive;
+  println("EasingIsActive: " + easingIsActive);
+}
 
 void draw() {
-  float maxSpeed = 120.00;
-  float steerStrength = 0.05;
+  maxSpeed = 2.00;
+  steerStrength = 0.05;
 
-  background(255);
+  if (easingIsActive) {
+    easing = 0.03;
+  } else {
+    easing = 1;
+  }
+
+  background(220);
 
   PVector desiredDirection = new PVector(mouseX - pos.x, mouseY - pos.y);
-  desiredDirection.normalize();
-
-  PVector desiredVelocity = PVector.mult(desiredDirection, maxSpeed);
+  PVector desiredVelocity = PVector.mult(desiredDirection, easing).limit(maxSpeed);
   PVector desiredSteeringForce = PVector.sub(desiredVelocity, vel).mult(steerStrength);
-  PVector acceleration = desiredSteeringForce.copy().limit(steerStrength);
+  PVector accelerationForce = desiredSteeringForce.limit(steerStrength);
 
-  vel.add(acceleration);
-  vel.limit(maxSpeed);
+  if (accelerationForce.mag() > 0.00001) {
+    vel.add(accelerationForce);
+    vel.limit(maxSpeed);
+    pos.add(vel);
+  }
 
-  pos.add(vel);
-
-  fill(0);
+  fill(30);
   circle(pos.x, pos.y, 20);
 }
