@@ -26,7 +26,6 @@ class Particle {
       pos.x = width - radius;
     }
 
-
     if (pos.y < radius) {
       vel.y = -vel.y;
       pos.y = radius;
@@ -39,6 +38,6 @@ class Particle {
   public void render() {
     noStroke();
     fill(col);
-    circle(viewPort.mapScreenCordX(pos.x), viewPort.mapScreenCordY(pos.y), radius * 2);
+    circle(map(pos.x, viewPort.x1, viewPort.x2, 0, width),  map(pos.y, viewPort.y1, viewPort.y2, 0, height), radius * 2 * viewPort.scale);
   }
 }

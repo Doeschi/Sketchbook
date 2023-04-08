@@ -29,10 +29,14 @@ class QuadTree {
   }
 
   public void render() {
-    if (hasChildren) {
-      stroke(0, 0, depth * 25);
-      line(boundary.x - boundary.w, boundary.y, boundary.x + boundary.w, boundary.y);
-      line(boundary.x, boundary.y - boundary.h, boundary.x, boundary.y + boundary.h);
+    if (hasChildren && viewPort.isInViewPort(boundary)) {
+      stroke(depth * 30, 100,100);
+      float x = map(boundary.x, viewPort.x1, viewPort.x2, 0, width);
+      float y = map(boundary.y, viewPort.y1, viewPort.y2, 0, height);
+      float w = boundary.w * viewPort.scale;
+      float h = boundary.h * viewPort.scale;
+      line(x - w, y, x + w, y);
+      line(x, y - h, x, y + h);
       topLeft.render();
       topRight.render();
       bottomLeft.render();
